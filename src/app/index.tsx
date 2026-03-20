@@ -212,13 +212,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     gap: 10,
     shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
   },
   buttonPressed: {
-    opacity: 0.9,
+    opacity: 0.92,
     transform: [{ scale: 0.97 }],
   },
   downloadIcon: {
