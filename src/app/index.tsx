@@ -1,10 +1,9 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import {
   Dimensions,
   Pressable,
-  Animated as RNAnimated,
   StyleSheet,
   Text,
   View,
@@ -18,7 +17,7 @@ import Animated, {
   withDelay,
   withRepeat,
   withSequence,
-  withTiming
+  withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -29,11 +28,8 @@ const { width: SCREEN_W } = Dimensions.get("window");
 const GLOW_SIZE = 160;
 const STACK_OFFSET = 11;
 
-export default function DownloadScreen() {
+export default function LandingScreen() {
   const router = useRouter();
-  const [downloading, setDownloading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressAnim = useRef(new RNAnimated.Value(0)).current;
 
   const logoScale = useSharedValue(0.55);
   const logoOpacity = useSharedValue(0);
@@ -89,38 +85,6 @@ export default function DownloadScreen() {
     transform: [{ scale: glowScale.value }],
   }));
 
-  const handleDownload = useCallback(() => {
-    setDownloading(true);
-    let p = 0;
-    const interval = setInterval(() => {
-      p += Math.random() * 15 + 5;
-      if (p >= 100) {
-        p = 100;
-        clearInterval(interval);
-        setProgress(100);
-        RNAnimated.timing(progressAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: false,
-        }).start(() => {
-          setTimeout(() => router.replace("/categories"), 600);
-        });
-      } else {
-        setProgress(Math.round(p));
-        RNAnimated.timing(progressAnim, {
-          toValue: p / 100,
-          duration: 200,
-          useNativeDriver: false,
-        }).start();
-      }
-    }, 300);
-  }, [router, progressAnim]);
-
-  const progressWidth = progressAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0%", "100%"],
-  });
-
   return (
     <View style={styles.root}>
       <View style={styles.bgBlobTopRight} />
@@ -134,7 +98,6 @@ export default function DownloadScreen() {
 
       <SafeAreaView style={styles.safe} edges={["bottom", "left", "right"]}>
         <View style={styles.content}>
-          {/* Ethiopian flag */}
           <Animated.View entering={FadeInDown.delay(100).duration(600)}>
             <Image
               source={ETHIOPIA_FLAG}
@@ -144,7 +107,6 @@ export default function DownloadScreen() {
             />
           </Animated.View>
 
-          {/* Logo with glow */}
           <View style={styles.logoArea}>
             <Animated.View style={[styles.glow, glowStyle]} />
             <Animated.View style={[styles.logoWrap, logoStyle]}>
@@ -156,7 +118,6 @@ export default function DownloadScreen() {
             </Animated.View>
           </View>
 
-          {/* Stacked cards — 4 layers, text on front */}
           <Animated.View
             entering={FadeInUp.delay(400).duration(700)}
             style={styles.cardStack}
@@ -165,47 +126,30 @@ export default function DownloadScreen() {
             <View style={[styles.stackLayer, styles.layer2]} />
             <View style={[styles.stackLayer, styles.layer1]} />
             <View style={styles.frontCard}>
-              <Text style={styles.title}>የኢትዮጵያ መንጃ ፈቃድ{"\n"}ፈተና ልምምድ</Text>
+              <Text style={styles.title}>
+                የኢትዮጵያ መንጃ ፈቃድ{"\n"}ፈተና ልምምድ
+              </Text>
               <View style={styles.divider} />
               <Text style={styles.subtitle}>
-                የመንጃ ፈቃድ ፈተና ለመለማመድ{"\n"}ጥያቄወችን ያውርዱ
+                የመንጃ ፈቃድ ፈተና ለመለማመድ{"\n"}የፈቃድ ዓይነትዎን ይምረጡ
               </Text>
             </View>
           </Animated.View>
 
-          {/* CTA */}
           <Animated.View
             entering={FadeInUp.delay(650).duration(600)}
             style={styles.ctaArea}
           >
-            {downloading ? (
-              <View style={styles.progressContainer}>
-                <View style={styles.progressRow}>
-                  <View style={styles.progressBarBg}>
-                    <RNAnimated.View
-                      style={[styles.progressBarFill, { width: progressWidth }]}
-                    />
-                  </View>
-                  <Text style={styles.progressPct}>{progress}%</Text>
-                </View>
-                <Text style={styles.progressLabel}>
-                  {progress < 100 ? "በማውረድ ላይ..." : "✓  ማውረዱ ተጠናቋል!"}
-                </Text>
-              </View>
-            ) : (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.downloadBtn,
-                  pressed && styles.downloadBtnPressed,
-                ]}
-                onPress={handleDownload}
-              >
-                <View style={styles.btnIconCircle}>
-                  <Text style={styles.btnIcon}>↓</Text>
-                </View>
-                <Text style={styles.btnLabel}>ጥያቄወችን ያውርዱ</Text>
-              </Pressable>
-            )}
+            <Pressable
+              style={({ pressed }) => [
+                styles.ctaBtn,
+                pressed && styles.ctaBtnPressed,
+              ]}
+              onPress={() => router.push("/categories")}
+            >
+              <Text style={styles.ctaLabel}>የፈቃድ ዓይነት ይምረጡ</Text>
+              <Text style={styles.ctaArrow}>→</Text>
+            </Pressable>
           </Animated.View>
         </View>
       </SafeAreaView>
@@ -218,7 +162,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F7FB",
   },
-
   bgBlobTopRight: {
     position: "absolute",
     top: -SCREEN_W * 0.32,
@@ -237,7 +180,6 @@ const styles = StyleSheet.create({
     borderRadius: SCREEN_W * 0.38,
     backgroundColor: "rgba(218, 18, 26, 0.035)",
   },
-
   accentStrip: {
     flexDirection: "row",
     height: 5,
@@ -245,7 +187,6 @@ const styles = StyleSheet.create({
   accentBar: {
     flex: 1,
   },
-
   safe: {
     flex: 1,
     paddingHorizontal: 28,
@@ -256,8 +197,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 16,
   },
-
-  /* ── Flag ── */
   flagBadge: {
     width: 68,
     height: 40,
@@ -266,8 +205,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(0,0,0,0.08)",
   },
-
-  /* ── Logo ── */
   logoArea: {
     alignItems: "center",
     justifyContent: "center",
@@ -290,8 +227,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-
-  /* ── Stacked cards ── */
   cardStack: {
     width: "100%",
     marginBottom: STACK_OFFSET * 3 + 36,
@@ -354,12 +289,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: 0.1,
   },
-
-  /* ── CTA ── */
   ctaArea: {
     width: "100%",
   },
-  downloadBtn: {
+  ctaBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -367,99 +300,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#1A56DB",
     borderRadius: 16,
     paddingVertical: 18,
-    gap: 12,
+    gap: 10,
     shadowColor: "#1A56DB",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.28,
     shadowRadius: 20,
     elevation: 12,
   },
-  downloadBtnPressed: {
+  ctaBtnPressed: {
     opacity: 0.92,
     transform: [{ scale: 0.98 }],
   },
-  btnIconCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "rgba(255,255,255,0.18)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  btnIcon: {
-    fontSize: 16,
-    color: "#FFF",
-    fontWeight: "800",
-  },
-  btnLabel: {
+  ctaLabel: {
     color: "#FFF",
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
   },
-
-  /* ── Progress ── */
-  progressContainer: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 22,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  progressRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 10,
-  },
-  progressBarBg: {
-    flex: 1,
-    height: 10,
-    backgroundColor: "rgba(26, 86, 219, 0.1)",
-    borderRadius: 5,
-    overflow: "hidden",
-  },
-  progressBarFill: {
-    height: "100%",
-    backgroundColor: "#1A56DB",
-    borderRadius: 5,
-  },
-  progressPct: {
-    fontSize: 14,
+  ctaArrow: {
+    color: "#FFF",
+    fontSize: 20,
     fontWeight: "700",
-    color: "#1A56DB",
-    minWidth: 36,
-    textAlign: "right",
-  },
-  progressLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#6E829B",
-    textAlign: "center",
-  },
-
-  /* ── Footer ── */
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    marginBottom: 22,
-  },
-  footerDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#CBD5E1",
-  },
-  footerText: {
-    color: "#A0AEBF",
-    fontSize: 13,
-    letterSpacing: 0.2,
   },
 });
