@@ -74,6 +74,23 @@ export default function ResultsScreen() {
           ]}
           onPress={() =>
             router.replace({
+              pathname: '/section-select',
+              params: {
+                category: category ?? '',
+                categoryTitle: categoryTitle ?? '',
+              },
+            })
+          }
+        >
+          <Text style={styles.retryButtonText}>ክፍል ይምረጡ</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.homeButton,
+            pressed && styles.buttonPressed,
+          ]}
+          onPress={() =>
+            router.replace({
               pathname: '/question-setup',
               params: {
                 category: category ?? '',
@@ -83,16 +100,7 @@ export default function ResultsScreen() {
             })
           }
         >
-          <Text style={styles.retryButtonText}>ድገም</Text>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.homeButton,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => router.replace('/categories')}
-        >
-          <Text style={styles.homeButtonText}>መነሻ</Text>
+          <Text style={styles.homeButtonText}>እንደገና ሞክር</Text>
         </Pressable>
       </View>
     </SafeAreaView>
