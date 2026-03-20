@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated as RNAnimated,
   Pressable,
@@ -8,6 +8,15 @@ import {
   Text,
   View,
 } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Colors } from '@/constants/colors';
@@ -19,6 +28,43 @@ export default function DownloadScreen() {
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const progressAnim = useRef(new RNAnimated.Value(0)).current;
+
+  const logoRotate = useSharedValue(0);
+  const logoScale = useSharedValue(0.75);
+  const logoOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    logoOpacity.value = withTiming(1, { duration: 500 });
+    logoScale.value = withTiming(1, {
+      duration: 900,
+      easing: Easing.out(Easing.back(1.4)),
+    });
+    logoRotate.value = withDelay(
+      400,
+      withRepeat(
+        withSequence(
+          withTiming(12, {
+            duration: 2200,
+            easing: Easing.inOut(Easing.sin),
+          }),
+          withTiming(-12, {
+            duration: 2200,
+            easing: Easing.inOut(Easing.sin),
+          }),
+        ),
+        -1,
+        true,
+      ),
+    );
+  }, []);
+
+  const logoAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: logoOpacity.value,
+    transform: [
+      { scale: logoScale.value },
+      { rotate: `${logoRotate.value}deg` },
+    ],
+  }));
 
   const handleDownload = useCallback(() => {
     setDownloading(true);
@@ -55,7 +101,9 @@ export default function DownloadScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.content}>
-        <Image source={APP_LOGO} style={styles.logo} contentFit="contain" />
+        <Animated.View style={[styles.logoWrap, logoAnimatedStyle]}>
+          <Image source={APP_LOGO} style={styles.logo} contentFit="contain" />
+        </Animated.View>
 
         <Text style={styles.title}>
           የኢትዮጵያ መንጃ ፈቃድ{'\n'}ልምምድ
@@ -109,10 +157,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  logoWrap: {
+    marginBottom: 28,
+  },
   logo: {
     width: 120,
     height: 120,
-    marginBottom: 28,
   },
   title: {
     fontSize: 28,
