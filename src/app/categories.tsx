@@ -27,7 +27,7 @@ export default function CategoriesScreen() {
             title={cat.title}
             onPress={() =>
               router.push({
-                pathname: '/section-select',
+                pathname: '/download',
                 params: { category: cat.id, categoryTitle: cat.title },
               })
             }
