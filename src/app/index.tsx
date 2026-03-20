@@ -22,6 +22,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/colors';
 
 const APP_LOGO = require('@/assets/images/appLogo.svg');
+/** Landing background */
+const LANDING_BG = '#F0FFC3';
 
 export default function DownloadScreen() {
   const router = useRouter();
@@ -149,7 +151,7 @@ export default function DownloadScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F3F4F4',
+    backgroundColor: LANDING_BG,
     paddingHorizontal: 24,
   },
   content: {
