@@ -40,6 +40,7 @@ export default function RootLayout() {
       >
         <Stack.Screen name="index" />
         <Stack.Screen name="categories" />
+        <Stack.Screen name="download" />
         <Stack.Screen name="section-select" />
         <Stack.Screen name="question-setup" />
         <Stack.Screen name="quiz" />
