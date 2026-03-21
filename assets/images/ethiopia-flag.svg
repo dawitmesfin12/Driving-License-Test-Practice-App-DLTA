@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 600">
+  <rect width="1200" height="200" fill="#078930"/>
+  <rect y="200" width="1200" height="200" fill="#FCDD09"/>
+  <rect y="400" width="1200" height="200" fill="#DA121A"/>
+  <g transform="matrix(1.6666667,0,0,1.6666667,600,300)">
+    <circle r="120" fill="#0f47af"/>
+    <g id="a">
+      <path d="m 0,-96 -4.205849,12.944272 17.347494,53.390097 H -9.987258 l -2.599358,8 h 74.162668 l 11.011056,-8 H 21.553343 Z" fill="#fcdd09"/>
+      <path d="M 0,44 V 96" transform="rotate(-144)" stroke="#fcdd09" stroke-width="4"/>
+    </g>
+    <use xlink:href="#a" transform="rotate(72)"/>
+    <use xlink:href="#a" transform="rotate(144)"/>
+    <use xlink:href="#a" transform="rotate(-144)"/>
+    <use xlink:href="#a" transform="rotate(-72)"/>
+  </g>
+</svg>
